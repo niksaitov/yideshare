@@ -18,11 +18,6 @@ const navItems = [
     url: "/feed",
     icon: Calendar,
   },
-  // {
-  //   title: "Your Friends",
-  //   url: "/friends",
-  //   icon: Users,
-  // },
   {
     title: "Your Rides",
     url: "/dashboard",
