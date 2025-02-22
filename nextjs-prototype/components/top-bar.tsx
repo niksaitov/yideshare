@@ -15,6 +15,8 @@ import {
 } from "@/components/ui/dialog";
 
 export function TopBar() {
+  const [ownerId, setOwnerId] = React.useState("");  // TODO:
+
   // Quick search fields
   const [from, setFrom] = React.useState("");
   const [to, setTo] = React.useState("");
@@ -50,9 +52,14 @@ export function TopBar() {
   
     // Convert to ISO string format for Prisma
     const formattedStartTime = startDate.toISOString();  
-    const formattedEndTime = endDate.toISOString();      
+    const formattedEndTime = endDate.toISOString();   
+    if (!organizerName || !phoneNumber || !from || !to || !startTime || !endTime) {
+      console.error("Missing required fields");
+      return;
+    }   
 
     const rideData = {
+      ownerId: ownerId, 
       ownerName: organizerName,
       ownerPhone: phoneNumber,
       beginning: from,
