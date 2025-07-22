@@ -133,6 +133,7 @@ export function TopBar({ onResults, rides }: TopBarProps) {
       beginning: from,
       destination: to,
       description,
+      date: selectedDate,
       startTime: startTimeObject,
       endTime: endTimeObject,
       totalSeats: additionalPassengers + 1,
@@ -305,6 +306,8 @@ export function TopBar({ onResults, rides }: TopBarProps) {
         setFrom={setFrom}
         to={to}
         setTo={setTo}
+        date={date ?? new Date()}
+        setDate={setDate}
         startTime={startTime}
         setStartTime={setStartTime}
         endTime={endTime}

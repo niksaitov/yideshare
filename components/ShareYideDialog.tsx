@@ -29,6 +29,8 @@ interface ShareYideDialogProps {
   setFrom: (v: string) => void;
   to: string;
   setTo: (v: string) => void;
+  date: Date | null;
+  setDate: (v: Date | null) => void;
   startTime: string;
   setStartTime: (v: string) => void;
   endTime: string;
@@ -55,6 +57,8 @@ export default function ShareYideDialog({
   setFrom,
   to,
   setTo,
+  date,
+  setDate,
   startTime,
   setStartTime,
   endTime,
@@ -73,7 +77,7 @@ export default function ShareYideDialog({
     undefined
   );
 
-  const ready = from && to && startTime && endTime && !phoneError && organizerName; //in future, can add more checks
+  const ready = from && to && startTime && endTime && !phoneError && organizerName && date; //in future, can add more checks
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -170,24 +174,48 @@ export default function ShareYideDialog({
             />
           </div>
 
-          {/* seats */}
-          <div className="space-y-2">
-            <Label htmlFor="seats">
-              Number of Open Seats <span className="text-red-500">*</span>
-            </Label>
-            <Input
-              id="seats"
-              type="number"
-              min="1"
-              max="10"
-              placeholder="3"
-              value={additionalPassengers === 0 ? "" : additionalPassengers}
-              onChange={(e) => {
-                const val = e.target.value;
-                setAdditionalPassengers(val === "" ? 0 : parseInt(val));
-              }}
-              required
-            />
+          <div className="grid sm:grid-cols-2 gap-4">
+            {/* seats */}
+            <div className="space-y-2">
+              <Label htmlFor="seats">
+                Number of Open Seats <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="seats"
+                type="number"
+                min="1"
+                max="10"
+                placeholder="3"
+                value={additionalPassengers === 0 ? "" : additionalPassengers}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setAdditionalPassengers(val === "" ? 0 : parseInt(val));
+                }}
+                required
+              />
+            </div>
+
+            {/* date */}
+            <div className="space-y-2">
+              <Label htmlFor="date">
+                Travel Date <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="date"
+                type="date"
+                value={date ? date.toISOString().split("T")[0] : ""} // format to YYYY-MM-DD
+                onChange={(e) => {
+                  if (e.target.value) {
+                    const newDate = new Date(e.target.value);
+                    setDate(newDate);
+                  } else{
+                    setDate(null); // clear date if input is empty
+                  }
+                }}
+                // placeholder="YYYY-MM-DD"
+                required
+              />
+            </div>
           </div>
 
           {/* description */}
