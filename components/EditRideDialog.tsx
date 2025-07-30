@@ -18,6 +18,10 @@ import { Ride } from "@prisma/client";
 import { useState } from "react";
 import { CustomPhoneInput } from "@/components/ui/phone-input";
 import { createStartEndDateTimes } from "@/lib/time";
+import { encodeDate } from "@/lib/time";
+import { decodeDate } from "@/lib/time";
+import { formatDate } from "@/lib/time";
+import { useEffect } from "react";
 
 const formatTimeForDisplay = (date: Date) => {
   const hours = date.getHours();
@@ -71,8 +75,28 @@ export default function EditRideDialog({
     endTime: ride.endTime
       ? formatTimeForDisplay(new Date(ride.endTime))
       : "12:00 AM",
+    date: new Date(ride.startTime),
     totalSeats: ride.totalSeats,
   });
+
+  // to make sure the right dialog is pulled up
+  useEffect(() => {
+    setOrganizerName(ride.ownerName || "");
+    setPhoneNumber(ride.ownerPhone || "");
+    setFormData({
+      beginning: ride.beginning,
+      destination: ride.destination,
+      description: ride.description || "",
+      startTime: ride.startTime
+        ? formatTimeForDisplay(new Date(ride.startTime))
+        : "12:00 AM",
+      endTime: ride.endTime
+        ? formatTimeForDisplay(new Date(ride.endTime))
+        : "12:00 AM",
+      date: new Date(ride.startTime),
+      totalSeats: ride.totalSeats,
+    });
+  }, [ride]);
 
   const ready =
     formData.beginning &&
@@ -80,6 +104,7 @@ export default function EditRideDialog({
     formData.startTime &&
     formData.endTime &&
     formData.totalSeats &&
+    formData.date &&
     organizerName &&
     !phoneError;
 
@@ -90,7 +115,7 @@ export default function EditRideDialog({
     const { startTimeObject, endTimeObject } = createUpdatedTimes(
       formData.startTime,
       formData.endTime,
-      new Date(ride.startTime)
+      formData.date
     );
     
     const updatedRide = {
@@ -98,6 +123,7 @@ export default function EditRideDialog({
       destination: formData.destination,
       startTime: startTimeObject,
       endTime: endTimeObject,
+      date: formData.date,
       description: formData.description,
       totalSeats: formData.totalSeats,
       ownerName: organizerName,
@@ -209,26 +235,47 @@ export default function EditRideDialog({
             />
           </div>
 
-          {/* seats */}
-          <div className="space-y-2">
-            <Label htmlFor="seats">
-              Number of Open Seats <span className="text-red-500">*</span>
-            </Label>
-            <Input
-              id="seats"
-              type="number"
-              min="1"
-              max="10"
-              value={formData.totalSeats}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  totalSeats: parseInt(e.target.value),
-                })
-              }
-              required
-            />
-          </div>
+          <div className="grid sm:grid-cols-2 gap-4">
+            {/* seats */}
+            <div className="space-y-2">
+              <Label htmlFor="seats">
+                Number of Open Seats <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="seats"
+                type="number"
+                min="1"
+                max="10"
+                value={formData.totalSeats}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    totalSeats: parseInt(e.target.value),
+                  })
+                }
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="date">
+                Travel Date <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="date"
+                type="date"
+                value={formatDate(formData.date)} // format to YYYY-MM-DD
+                onChange={(e) => 
+                  setFormData({
+                    ...formData,
+                    date: decodeDate(e.target.value)
+                  })
+                }
+                // placeholder="YYYY-MM-DD"
+                required
+              />
+            </div>
+          </div>      
 
           {/* description */}
           <div className="space-y-2">

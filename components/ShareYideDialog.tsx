@@ -16,6 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { TimeSelect } from "@/components/ui/time-select";
 import { CustomPhoneInput } from "@/components/ui/phone-input";
+import { formatDate } from "@/lib/time";
 
 /* -------------------------------------------------------------------------- */
 /*  props                                                                     */
@@ -203,7 +204,7 @@ export default function ShareYideDialog({
               <Input
                 id="date"
                 type="date"
-                value={date ? date.toISOString().split("T")[0] : ""} // format to YYYY-MM-DD
+                value={formatDate(date)}
                 onChange={(e) => {
                   if (e.target.value) {
                     const newDate = new Date(e.target.value);

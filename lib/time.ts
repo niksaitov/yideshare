@@ -57,6 +57,11 @@ export function encodeDate(date: Date): string {
   return date.toISOString();
 }
 
+export function formatDate(date: Date | null): string {
+  if (!date) return "";
+  return date.toLocaleDateString("sv-SE"); // "YYYY-MM-DD" format
+}
+
 export function decodeDate(dateString: string): Date {
   const parsed = new Date(dateString);
   return parsed;
